@@ -1,0 +1,39 @@
+body {
+    background-color: rgb(238, 192, 255);
+    text-align: center;
+ }
+
+h1 {
+    font-size: 100px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; 
+    text-decoration: underline; 
+    text-shadow: -1px 1px 2px;
+    -webkit-text-fill-color: rgb(232, 11, 232);
+    -webkit-text-stroke: 1px
+
+ }
+
+h2 {
+    font-size: 50px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-shadow: -1px 1px 2px;
+    -webkit-text-fill-color: rgb(89, 220, 89);
+    -webkit-text-stroke: 1px;
+
+ }
+
+p {
+    font-size: 30px;
+    font-family:'Times New Roman', Times, serif;
+    color: rgb(6, 62, 6);
+    -webkit-text-stroke: 1px;
+ }
+
+h3 {
+   font-size: 35px;
+   font-family: Verdana, Geneva, Tahoma, sans-serif;
+   text-shadow: -1px 1px 2px;
+   -webkit-text-fill-color: rgb(89, 220, 89);
+   -webkit-text-stroke: 1px;
+
+}
