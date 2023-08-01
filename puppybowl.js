@@ -118,7 +118,7 @@ const renderAllPlayers = async (players) => {
       playerElement.innerHTML = `
         <h2>${player.name}</h2>
         <button class="details-button" data-id="${player.id}">See Details</button>
-        <button class="delete-button" data-id="${player.id}">Delete</button>
+        <button class="delete-button" data-id="${player.id}">Remove Player</button>
       `;
       
       playerContainer.appendChild(playerElement);
@@ -136,7 +136,7 @@ const renderAllPlayers = async (players) => {
           <p>${player.teamId}</p>
           <p>${player.cohortId}</p>
           <button class="details-button" data-id="${player.id}">See Details</button>
-          <button class="delete-button" data-id="${player.id}">Delete</button>
+          <button class="delete-button" data-id="${player.id}">Remove Player</button>
         `;
         console.log(playerElement);
       });
