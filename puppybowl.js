@@ -128,6 +128,7 @@ const renderAllPlayers = async (players) => {
       detailsButton.addEventListener('click', async (event) => {
         playerElement.innerHTML = `
           <h2>${player.name}</h2>
+          <p>${player.imageUrl}</p>
           <p>${player.breed}</p>
           <p>${player.status}</p>
           <p>${player.createdAt}</p>
@@ -138,6 +139,21 @@ const renderAllPlayers = async (players) => {
           <button class="delete-button" data-id="${player.id}">Delete</button>
         `;
         console.log(playerElement);
+      });
+
+       // delete player
+       const deleteButton = playerElement.querySelector('.delete-button');
+       deleteButton.addEventListener('click', async (event) => {
+        // event.preventDefault();
+        // deletePlayer(player.id);
+        try {
+          const id = event.target.dataset.id
+          await removePlayer(id)
+          const remainingPlayers = await fetchAllPlayers
+          renderAllPlayers(remainingPlayers)
+        } catch (error) {
+          console.error(error)
+        }
       });
     });
   } catch (error) {
@@ -175,6 +191,7 @@ const renderSinglePlayer = async (id) => {
     playerDetailsElement.classList.add('player-details');
     playerDetailsElement.innerHTML = `
             <h2>${players.name}</h2>
+            <p>${players.imageUrl}</p>
             <p>${players.breed}</p>
             <p>${players.status}</p>
             <p>${players.createdAt}</p>
@@ -184,7 +201,13 @@ const renderSinglePlayer = async (id) => {
         `;
     playerContainer.appendChild(playerDetailsElement); 
 
-     } catch (error) {
+    // add event listener to close button
+    const closeButton = playerDetailsElement.querySelector('.close-button');
+    closeButton.addEventListener('click', () => {
+      playerDetailsElement.remove();
+    });
+
+    } catch (error) {
     console.error(error);
   }
 };
@@ -194,13 +217,43 @@ const renderSinglePlayer = async (id) => {
  * When the form is submitted, it should call `addNewPlayer`, fetch all players,
  * and then render all players to the DOM.
  */
-const renderNewPlayerForm = () => {
-  try {
-    
-  } catch (err) {
-    console.error("Uh oh, trouble rendering the new player form!", err);
-  }
-};
+
+  const renderNewPlayerForm = () => {
+    try {
+      const container = document.getElementById('newPlayerFormContainer');
+
+      if (container) {
+       
+        container.innerHTML = '';
+
+        const form = document.createElement('form');
+        form.setAttribute('id', 'newPlayerForm');
+
+        // Name field
+        const nameLabel = document.createElement('label');
+        nameLabel.setAttribute('for', 'name');
+        nameLabel.innerText = 'Name:';
+        form.appendChild(nameLabel);
+
+        const nameInput = document.createElement('input');
+        nameInput.setAttribute('type', 'text');
+        nameInput.setAttribute('id', 'name');
+        nameInput.setAttribute('name', 'name');
+        nameInput.required = true;
+        form.appendChild(nameInput);
+
+        // Submit button
+        const submitButton = document.createElement('button');
+        submitButton.setAttribute('type', 'submit');
+        submitButton.innerText = 'Submit';
+        form.appendChild(submitButton);
+
+        container.appendChild(form);
+      }
+    } catch (err) {
+      console.error('Uh oh, trouble rendering the new player form!', err);
+    }
+  };
 
 /**
  * Initializes the app by fetching all players and rendering them to the DOM.
