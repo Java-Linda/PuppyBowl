@@ -200,11 +200,11 @@ const renderSinglePlayer = async (id) => {
  * and then render all players to the DOM.
  */
 
-const addNewPlayer = async (name,breed,imageUrl,teamId) => {
+const addNewPlayer = async (name, breed, imageUrl, status, teamId) => {
   try {
     const response = await fetch(PLAYERS_API_URL,{
       method: "POST",
-      body: JSON.stringify({name,breed,imageUrl,teamId}),
+      body: JSON.stringify({name, breed, imageUrl, status, teamId}),
       headers: {
         'Content-Type':'application/json'
       }
@@ -234,6 +234,10 @@ const renderNewPlayerForm = () => {
   <br>
   <input type="text" id="imageUrl" placeholder="Image URL">
   <br>
+  <label for="Status">Status</label>
+  <br>
+  <input type="text" id="status" placeholder="Status"></input>
+  <br>
   <label for="teamId">Team Name</label>
   <br>
   <input type="number" id="teamId" placeholder="Team Name">
@@ -251,15 +255,17 @@ const renderNewPlayerForm = () => {
     name:form.name.value,
     breed:form.breed.value,
     imageUrl:form.imageUrl.value,
+    status:form.status.value,
     teamId:form.teamId.value || null
   };
-  await addNewPlayer(playerData.name, playerData.breed, playerData.imageUrl, playerData.teamId);
+  await addNewPlayer(playerData.name, playerData.breed, playerData.imageUrl, playerData.status, playerData.teamId);
 
   const players = await fetchAllPlayers();
   renderAllPlayers(players.data.players);
   form.name.value="";
   form.breed.value="";
   form.imageUrl.value="";
+  form.status.value="";
   form.teamId.value="";
   })
 };
@@ -290,11 +296,6 @@ if (typeof window === "undefined") {
 } else {
   init();
 }
-
-
-//<label for="Status">Status</label>
-//  <br>
-//  <input type="text" id="status" placeholder="Status"></input>
 
 
 
