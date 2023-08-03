@@ -211,6 +211,7 @@ const addNewPlayer = async (name, breed, imageUrl, status, teamId) => {
     });
     const newPlayer = await response.json();
     fetchAllPlayers();
+    window.location.reload();
   } catch (err) {
     console.error("Oops, something went wrong with adding that player!", err);
   }
