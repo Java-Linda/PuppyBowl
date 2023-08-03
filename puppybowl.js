@@ -1,5 +1,5 @@
-const newPlayerForm = document.querySelector('#new-player-form');
-const playerContainer = document.querySelector('#player-container');
+const newPlayerFormContainer = document.querySelector("#new-player-form");
+const playerContainer = document.querySelector("#player-container");
 
 // Use the API_URL variable to make fetch requests to the API.
 // Replace the placeholder with your cohort name (ex: 2109-UNF-HY-WEB-PT)
@@ -44,28 +44,6 @@ const fetchSinglePlayer = async (id) => {
  * @returns {Object} the player returned by the API
  */
 
-const addNewPlayer = async (playerObj) => {
-  try {
-    const response = await fetch(PLAYERS_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=UTF-8"
-      },
-      body: JSON.stringify(playerObj),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to add player");
-    }
-
-    const addedPlayer = await response.json();
-    return addedPlayer.data.players;
-  } catch (err) {
-    console.error("Oops, something went wrong with adding that player!", err);
-    throw err;
-  }
-};
-
 /**
  * Removes a player from the roster via the API.
  * @param {number} playerId the ID of the player to remove
@@ -76,12 +54,11 @@ const removePlayer = async (id) => {
         method: 'DELETE',
       });
       const player = await response.json();
-      console.log(player);
       fetchAllPlayers();
   
       window.location.reload();
     } catch (err) {
-      console.log(`Whoops, trouble removing player #${id} from the roster!`, err);
+      console.error("Whoops, trouble removing player #${id} from the roster!", err);
       throw err;
     }
   };
@@ -110,6 +87,7 @@ const removePlayer = async (id) => {
 //};
 
 const renderAllPlayers = async (players) => {
+  
   try {
     playerContainer.innerHTML = '';
     players.forEach((player) => {
@@ -117,8 +95,11 @@ const renderAllPlayers = async (players) => {
       playerElement.classList.add('player');
       playerElement.innerHTML = `
         <h2>${player.name}</h2>
+        <img src="${player.imageUrl}" alt="photo of ${player.name}">
+        <div class = "body">
         <button class="details-button" data-id="${player.id}">See Details</button>
         <button class="delete-button" data-id="${player.id}">Remove Player</button>
+        <div/>
       `;
       
       playerContainer.appendChild(playerElement);
@@ -128,13 +109,10 @@ const renderAllPlayers = async (players) => {
       detailsButton.addEventListener('click', async (event) => {
         playerElement.innerHTML = `
           <h2>${player.name}</h2>
-          <p>${player.imageUrl}</p>
+          <img src="${player.imageUrl}" alt="photo of ${player.name}">
           <p>${player.breed}</p>
           <p>${player.status}</p>
-          <p>${player.createdAt}</p>
-          <p>${player.updatedAt}</p>
           <p>${player.teamId}</p>
-          <p>${player.cohortId}</p>
           <button class="details-button" data-id="${player.id}">See Details</button>
           <button class="delete-button" data-id="${player.id}">Remove Player</button>
         `;
@@ -143,9 +121,7 @@ const renderAllPlayers = async (players) => {
 
        // delete player
        const deleteButton = playerElement.querySelector('.delete-button');
-       deleteButton.addEventListener('click', async (event) => {
-        // event.preventDefault();
-        // deletePlayer(player.id);
+       deleteButton.addEventListener('click', async (event) => {        
         try {
           const id = event.target.dataset.id
           await removePlayer(id)
@@ -181,7 +157,7 @@ const renderAllPlayers = async (players) => {
 const renderSinglePlayer = async (id) => {
   try {
     // fetch player details from server
-    const puppy = await getPlayerById(id);
+    const player = await getPlayerById(id);
 
     const playersResponse = await fetch(`${PLAYERS_API_URL}/player/${id}`);
     const players = await playersResponse.json();
@@ -191,14 +167,12 @@ const renderSinglePlayer = async (id) => {
     playerDetailsElement.classList.add('player-details');
     playerDetailsElement.innerHTML = `
             <h2>${players.name}</h2>
-            <p>${players.imageUrl}</p>
+            <img src="${players.imageUrl}" alt="photo of ${players.name}">
             <p>${players.breed}</p>
             <p>${players.status}</p>
-            <p>${players.createdAt}</p>
-            <p>${players.updatedAt}</p>
             <p>${players.teamId}</p>
-            <p>${players.cohortId}</p>
         `;
+    playerDetailsElement.classList.add('box');
     playerContainer.appendChild(playerDetailsElement); 
 
     // add event listener to close button
@@ -206,6 +180,14 @@ const renderSinglePlayer = async (id) => {
     closeButton.addEventListener('click', () => {
       playerDetailsElement.remove();
     });
+
+  //   return (
+  //     <div>
+  //        { players.map((player) =>
+  //           <h2>{player.player_id}</h2>
+  //        }
+  //     </div>
+  //  )
 
     } catch (error) {
     console.error(error);
@@ -218,42 +200,69 @@ const renderSinglePlayer = async (id) => {
  * and then render all players to the DOM.
  */
 
-  const renderNewPlayerForm = () => {
-    try {
-      const container = document.getElementById('newPlayerFormContainer');
-
-      if (container) {
-       
-        container.innerHTML = '';
-
-        const form = document.createElement('form');
-        form.setAttribute('id', 'newPlayerForm');
-
-        // Name field
-        const nameLabel = document.createElement('label');
-        nameLabel.setAttribute('for', 'name');
-        nameLabel.innerText = 'Name:';
-        form.appendChild(nameLabel);
-
-        const nameInput = document.createElement('input');
-        nameInput.setAttribute('type', 'text');
-        nameInput.setAttribute('id', 'name');
-        nameInput.setAttribute('name', 'name');
-        nameInput.required = true;
-        form.appendChild(nameInput);
-
-        // Submit button
-        const submitButton = document.createElement('button');
-        submitButton.setAttribute('type', 'submit');
-        submitButton.innerText = 'Submit';
-        form.appendChild(submitButton);
-
-        container.appendChild(form);
+const addNewPlayer = async (name,breed,imageUrl,teamId) => {
+  try {
+    const response = await fetch(PLAYERS_API_URL,{
+      method: "POST",
+      body: JSON.stringify({name,breed,imageUrl,teamId}),
+      headers: {
+        'Content-Type':'application/json'
       }
-    } catch (err) {
-      console.error('Uh oh, trouble rendering the new player form!', err);
-    }
+    });
+    const newPlayer = await response.json();
+    fetchAllPlayers();
+  } catch (err) {
+    console.error("Oops, something went wrong with adding that player!", err);
+  }
+};
+
+
+const renderNewPlayerForm = () => {
+  let formHtml = `
+  <form>
+  <label for="title">New Player Form</label>
+  <br>
+  <label for="name">Name</label>
+  <br>
+  <input type="text" id="name" placeholder="Name">
+  <br>
+  <label for="breed">Breed</label>
+  <br>
+  <input type="text" id="breed" placeholder="Breed">
+  <br>
+  <label for="imageUrl">Image URL</label>
+  <br>
+  <input type="text" id="imageUrl" placeholder="Image URL">
+  <br>
+  <label for="teamId">Team Name</label>
+  <br>
+  <input type="number" id="teamId" placeholder="Team Name">
+  <br>
+  <button type="submit">Submit</button>
+  </form>
+  `;
+  newPlayerFormContainer.innerHTML = formHtml;
+
+  let form = newPlayerFormContainer.querySelector('form');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+  
+  let playerData = {
+    name:form.name.value,
+    breed:form.breed.value,
+    imageUrl:form.imageUrl.value,
+    teamId:form.teamId.value || null
   };
+  await addNewPlayer(playerData.name, playerData.breed, playerData.imageUrl, playerData.teamId);
+
+  const players = await fetchAllPlayers();
+  renderAllPlayers(players.data.players);
+  form.name.value="";
+  form.breed.value="";
+  form.imageUrl.value="";
+  form.teamId.value="";
+  })
+};
 
 /**
  * Initializes the app by fetching all players and rendering them to the DOM.
@@ -262,7 +271,7 @@ const init = async () => {
   const players = await fetchAllPlayers();
   renderAllPlayers(players);
 
-  //renderNewPlayerForm();
+  renderNewPlayerForm();
 };
 
 // This script will be run using Node when testing, so here we're doing a quick
@@ -281,6 +290,12 @@ if (typeof window === "undefined") {
 } else {
   init();
 }
+
+
+//<label for="Status">Status</label>
+//  <br>
+//  <input type="text" id="status" placeholder="Status"></input>
+
 
 
 
