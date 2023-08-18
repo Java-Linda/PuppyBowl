@@ -137,6 +137,24 @@ const renderAllPlayers = async (players) => {
   }
 };
 
+***
+// export default function deletePlayer(){
+// const ({selectedPuppyId, setSelectedPuppyId}) = useState("");
+//  async(e) => {
+//  try{
+//    const id = e.target.playerData.id
+//    await removePlayer(id)
+//    const remainingPlayers = await fetchAllPlayers
+//    return AllPlayers(remainingPlayers)
+//} catch (error){
+//  console.error(error);
+//}
+//}
+//}
+***
+
+
+
 /**
  * Updates `<main>` to display a single player.
  * The player is displayed in a card with the following information:
